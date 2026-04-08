@@ -1,3 +1,15 @@
+/* ===== PALETA DE COLORES ===== */
+:root {
+    --primary: #C54058;      /* Rojo Coral */
+    --secondary: #E27258;    /* Coral Salmón */
+    --tertiary: #3EBCFF;     /* Azul Claro */
+    --neutral: #121212;      /* Negro Oscuro */
+    --light-bg: #F8F9FA;
+    --white: #FFFFFF;
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.16);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,190 +17,389 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, var(--neutral) 0%, #1a1a1a 100%);
     min-height: 100vh;
     padding: 20px;
+    color: var(--neutral);
 }
 
 .container {
-    max-width: 600px;
-    margin: 30px auto;
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    max-width: 700px;
+    margin: 40px auto;
+    background: var(--white);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 h1 {
     text-align: center;
-    color: #333;
-    margin-bottom: 10px;
-    font-size: 28px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 15px;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+/* ===== IMAGEN DEL LOGO ===== */
+.logo-container {
+    text-align: center;
+    margin-bottom: 30px;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.logo-img {
+    max-width: 200px;
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(197, 64, 88, 0.25);
+    transition: all 0.3s ease;
+    object-fit: cover;
+    border: 3px solid var(--light-bg);
+}
+
+.logo-img:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(197, 64, 88, 0.35);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .separator {
-    height: 2px;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-    margin: 20px 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 50%, var(--tertiary) 100%);
+    margin: 25px 0;
+    border-radius: 2px;
 }
 
 .form-group {
-    margin-bottom: 18px;
+    margin-bottom: 22px;
 }
 
 label {
     display: block;
     font-weight: 600;
-    color: #333;
-    margin-bottom: 8px;
-    font-size: 14px;
+    color: var(--neutral);
+    margin-bottom: 10px;
+    font-size: 15px;
+    letter-spacing: 0.3px;
 }
 
 input[type="text"] {
     width: 100%;
-    padding: 12px;
-    border: 2px solid #e0e0e0;
-    border-radius: 6px;
-    font-size: 14px;
+    padding: 14px 16px;
+    border: 2px solid #E0E0E0;
+    border-radius: 10px;
+    font-size: 15px;
     transition: all 0.3s ease;
     font-family: inherit;
+    background: var(--light-bg);
 }
 
 input[type="text"]:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: var(--primary);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(197, 64, 88, 0.1);
+    transform: translateY(-2px);
 }
 
 button {
     width: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #fff;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: var(--white);
     border: none;
-    padding: 12px 20px;
-    border-radius: 6px;
+    padding: 14px 24px;
+    border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 15px;
+    letter-spacing: 0.5px;
     transition: all 0.3s ease;
-    margin-top: 10px;
+    margin-top: 12px;
+    box-shadow: 0 4px 12px rgba(197, 64, 88, 0.3);
 }
 
 button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
 }
 
 button:active {
-    transform: translateY(0);
+    transform: translateY(-1px);
 }
 
 /* Enlaces */
 .administrar-link,
 .back-link {
-    display: inline-block;
-    color: #667eea;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary);
     text-decoration: none;
     font-weight: 600;
-    margin-bottom: 15px;
-    padding: 8px 0;
-    transition: color 0.3s ease;
+    margin-bottom: 20px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background: rgba(197, 64, 88, 0.05);
 }
 
 .administrar-link:hover,
 .back-link:hover {
-    color: #764ba2;
-    text-decoration: underline;
+    color: var(--white);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    transform: translateX(4px);
 }
 
-/* Tabla de registros */
+/* ===== TABLA DE REGISTROS ===== */
 .table-responsive {
     overflow-x: auto;
-    margin: 20px 0;
+    margin: 30px 0;
+    border-radius: 12px;
 }
 
 .registros-table {
     width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .registros-table thead {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: var(--white);
 }
 
 .registros-table th {
-    padding: 12px;
+    padding: 16px 14px;
     text-align: left;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    font-size: 13px;
+    text-transform: uppercase;
 }
 
 .registros-table td {
-    padding: 12px;
-    border-bottom: 1px solid #e0e0e0;
-    color: #333;
+    padding: 16px 14px;
+    border-bottom: 1px solid #F0F0F0;
+    color: var(--neutral);
+    font-weight: 500;
+}
+
+.registros-table tbody tr {
+    transition: all 0.2s ease;
+    background: var(--white);
 }
 
 .registros-table tbody tr:hover {
-    background-color: #f5f5f5;
+    background: linear-gradient(90deg, rgba(197, 64, 88, 0.03) 0%, rgba(62, 188, 255, 0.03) 100%);
+    transform: translateX(2px);
 }
 
 .registros-table tbody tr:last-child td {
     border-bottom: none;
 }
 
-/* Botón de eliminar */
+/* ===== BOTÓN DE ELIMINAR ===== */
 .btn-delete {
     width: auto;
-    background-color: #e74c3c;
+    background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
     color: white;
-    padding: 8px 16px;
+    padding: 10px 18px;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     transition: all 0.3s ease;
     margin: 0;
+    box-shadow: 0 2px 6px rgba(231, 76, 60, 0.3);
+    letter-spacing: 0.3px;
 }
 
 .btn-delete:hover {
-    background-color: #c0392b;
-    transform: scale(1.05);
+    transform: scale(1.08) translateY(-2px);
+    box-shadow: 0 6px 16px rgba(231, 76, 60, 0.5);
 }
 
-/* Mensaje de sin registros */
+.btn-delete:active {
+    transform: scale(1.04);
+}
+
+/* ===== MENSAJE DE SIN REGISTROS ===== */
 .no-records {
     text-align: center;
     color: #999;
-    padding: 40px 20px;
+    padding: 60px 40px;
     font-style: italic;
+    font-size: 16px;
+    background: var(--light-bg);
+    border-radius: 12px;
+    border: 2px dashed #E0E0E0;
 }
 
-/* Responsive */
+/* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
     .container {
-        padding: 20px;
-        margin: 15px auto;
+        padding: 25px;
+        margin: 20px auto;
+        border-radius: 16px;
     }
 
     h1 {
-        font-size: 22px;
+        font-size: 26px;
+        margin-bottom: 12px;
+    }
+
+    .separator {
+        margin: 20px 0;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    input[type="text"] {
+        padding: 12px 14px;
+        font-size: 16px; /* Evita zoom en iOS */
+    }
+
+    button {
+        padding: 12px 20px;
+        font-size: 14px;
+        margin-top: 10px;
     }
 
     .registros-table {
         font-size: 12px;
     }
 
-    .registros-table th,
+    .registros-table th {
+        padding: 12px 10px;
+        font-size: 12px;
+    }
+
     .registros-table td {
-        padding: 8px 4px;
+        padding: 12px 10px;
     }
 
     .btn-delete {
-        padding: 6px 12px;
+        padding: 8px 14px;
+        font-size: 12px;
+    }
+
+    .no-records {
+        padding: 40px 20px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 12px;
+    }
+
+    .container {
+        padding: 20px;
+        margin: 15px auto;
+        border-radius: 14px;
+    }
+
+    h1 {
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+
+    .separator {
+        margin: 18px 0;
+        height: 2px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    label {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    input[type="text"] {
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 8px;
+    }
+
+    button {
+        padding: 12px 16px;
+        font-size: 14px;
+        border-radius: 8px;
+    }
+
+    .administrar-link,
+    .back-link {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    .table-responsive {
+        margin: 20px 0;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .registros-table {
         font-size: 11px;
+        border-radius: 10px;
+    }
+
+    .registros-table th,
+    .registros-table td {
+        padding: 10px 8px;
+    }
+
+    .registros-table th {
+        font-size: 11px;
+    }
+
+    .btn-delete {
+        padding: 7px 12px;
+        font-size: 11px;
+        border-radius: 6px;
+    }
+
+    .no-records {
+        padding: 30px 15px;
+        border-radius: 10px;
+        font-size: 13px;
     }
 }
