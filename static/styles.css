@@ -18,10 +18,11 @@
 
 body {
     font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, var(--neutral) 0%, #1a1a1a 100%);
+    background: linear-gradient(135deg, #FFE5E5 0%, #FFF0E5 25%, #E5F5FF 50%, #F0E5FF 75%, #FFE5F0 100%);
     min-height: 100vh;
     padding: 20px;
     color: var(--neutral);
+    background-attachment: fixed;
 }
 
 .container {
