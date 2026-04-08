@@ -36,29 +36,48 @@ def conectar_db(reintentos=3, espera=1):
                 database=DB_NAME,
                 user=DB_USER,
                 password=DB_PASSWORD,
-                connect_timeout=15,
+                connect_timeout=20,  # Aumentado a 20 segundos
                 sslmode='require'
             )
+            
+            # Verificar que la conexión funciona
+            cursor = conn.cursor()
+            cursor.execute("SELECT 1")
+            cursor.close()
             
             print(f"✓ Conexión exitosa en intento {intento + 1}")
             return conn
             
         except psycopg2.OperationalError as e:
-            ultimo_error = str(e)
-            print(f"✗ Intento {intento + 1} fallido: {e}")
+            error_msg = str(e)
+            ultimo_error = error_msg
+            
+            # Diagnosticar el tipo de error
+            if 'timeout' in error_msg.lower():
+                print(f"✗ TIMEOUT: El servidor tardó demasiado (intento {intento + 1}/{reintentos})")
+            elif 'connection refused' in error_msg.lower():
+                print(f"✗ RECHAZADO: El servidor rechazó la conexión (intento {intento + 1}/{reintentos})")
+            elif 'password' in error_msg.lower():
+                print(f"✗ AUTENTICACIÓN: Contraseña o usuario incorrecto (intento {intento + 1}/{reintentos})")
+            elif 'no password' in error_msg.lower():
+                print(f"✗ AUTENTICACIÓN: Se requiere contraseña (intento {intento + 1}/{reintentos})")
+            else:
+                print(f"✗ ERROR OPERACIONAL: {error_msg[:60]} (intento {intento + 1}/{reintentos})")
+            
             if intento < reintentos - 1:
-                print(f"  Esperando {espera} segundos antes de reintentar...")
+                print(f"  → Esperando {espera}s antes de reintentar...\n")
                 time.sleep(espera)
                 espera *= 2
+                
         except Exception as e:
             ultimo_error = str(e)
-            print(f"✗ Error inesperado en intento {intento + 1}: {e}")
+            print(f"✗ ERROR INESPERADO (intento {intento + 1}/{reintentos}): {e}")
             if intento < reintentos - 1:
                 time.sleep(espera)
                 espera *= 2
     
-    print(f"✗ No se pudo conectar después de {reintentos} intentos")
-    print(f"  Último error: {ultimo_error}")
+    print(f"\n✗✗✗ NO SE PUDO CONECTAR DESPUÉS DE {reintentos} INTENTOS")
+    print(f"✗ Último error: {ultimo_error}\n")
     return None
 
 
@@ -183,11 +202,20 @@ def registrar():
         
         crear_persona(dni, nombre, apellido, direccion, telefono)
         flash(f'✓ Persona registrada correctamente: {nombre} {apellido}', 'success')
+        print(f"\n✓✓✓ REGISTRO EXITOSO: {nombre} {apellido} (DNI: {dni})\n")
+        
     except Exception as e:
-        print(f"Error en el registro: {e}")
-        flash(f'Error al registrar: {str(e)}', 'error')
+        error_msg = str(e)
+        print(f"\n✗✗✗ ERROR AL REGISTRAR: {error_msg}\n")
+        
+        # Proporcionar mensaje más útil al usuario
+        if 'No se pudo conectar' in error_msg:
+            flash('⚠️ Error: No hay conexión con la base de datos. Intenta de nuevo en unos segundos.', 'error')
+        elif 'already exists' in error_msg or 'ya está registrado' in error_msg:
+            flash(f'⚠️ Error: El DNI {dni} ya está registrado en el sistema.', 'error')
+        else:
+            flash(f'⚠️ Error: {error_msg}', 'error')
     
-    # Redirigir a administrar para ver el nuevo registro
     return redirect(url_for('administrar'))
 
 @app.route('/administrar')
