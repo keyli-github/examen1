@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 import psycopg2
 import os
 import time
@@ -185,6 +185,39 @@ def inicializar_base_datos():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/health')
+def health():
+    """Endpoint para verificar si la aplicación y BD están activas"""
+    try:
+        conn = conectar_db(reintentos=1)
+        
+        if conn is None:
+            return jsonify({
+                'status': 'error',
+                'app': 'ok',
+                'database': 'error',
+                'message': 'No se pudo conectar a PostgreSQL. Revisa que esté activa en Render.'
+            }), 503
+        
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1")
+        cursor.close()
+        conn.close()
+        
+        return jsonify({
+            'status': 'ok',
+            'app': 'ok',
+            'database': 'ok',
+            'message': 'Aplicación y base de datos están funcionando correctamente'
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'app': 'ok',
+            'database': 'error',
+            'message': f'Error: {str(e)}'
+        }), 500
 
 @app.route('/registrar', methods=['POST'])
 def registrar():
