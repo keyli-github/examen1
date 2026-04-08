@@ -7,10 +7,10 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = 'tu-clave-secreta-tecsup-2026'
 
 # Configuración de la base de datos
-DB_HOST = 'dpg-cr6bdj1u0jms73bn1teg-a.oregon-postgres.render.com'
-DB_NAME = 'dbtest_h0hy'
-DB_USER = 'dbtest_h0hy_user'
-DB_PASSWORD = 'xkmD4V6rmoGNJ27uGLq1k76ynORQ8HTd'
+DB_HOST = 'dpg-d7bbtddm5p6s73ad2h00-a.oregon-postgres.render.com'
+DB_NAME = 'examen01_pi2p'
+DB_USER = 'examen01_pi2p_user'
+DB_PASSWORD = 'PF1jUpRqF9zHL6uj36I8XYXiMcaCsdMn'
 
 print("\n" + "="*70)
 print("🚀 SERVIDOR TECSUP INICIANDO")
