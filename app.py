@@ -112,6 +112,57 @@ def obtener_registros():
     finally:
         conn.close()
 
+
+def inicializar_base_datos():
+    """
+    Crea la tabla 'personas' si no existe.
+    Se ejecuta automáticamente al iniciar la aplicación.
+    """
+    print("\n[INIT] Verificando estructura de base de datos...")
+    
+    conn = conectar_db()
+    if conn is None:
+        print("✗ No se pudo conectar para inicializar BD")
+        return False
+    
+    try:
+        cursor = conn.cursor()
+        
+        # Crear tabla si no existe
+        sql_create = """
+        CREATE TABLE IF NOT EXISTS personas (
+            id SERIAL PRIMARY KEY,
+            dni VARCHAR(20) NOT NULL UNIQUE,
+            nombre VARCHAR(100) NOT NULL,
+            apellido VARCHAR(100) NOT NULL,
+            direccion TEXT,
+            telefono VARCHAR(20),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        """
+        
+        cursor.execute(sql_create)
+        conn.commit()
+        print("✓ Tabla 'personas' verificada/creada")
+        
+        # Verificar que la tabla tiene datos
+        cursor.execute("SELECT COUNT(*) FROM personas")
+        count = cursor.fetchone()[0]
+        print(f"✓ {count} registros en la tabla")
+        
+        cursor.close()
+        conn.close()
+        return True
+        
+    except Exception as e:
+        print(f"✗ Error al inicializar BD: {e}")
+        try:
+            conn.rollback()
+            conn.close()
+        except:
+            pass
+        return False
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -188,10 +239,14 @@ def cerrar_app(error=None):
 if __name__ == '__main__':
     app.teardown_appcontext(cerrar_app)
     
+    # INICIALIZAR BASE DE DATOS
+    print("\n[STARTUP] Iniciando aplicación...")
+    inicializar_base_datos()
+    
     port = int(os.environ.get('PORT', 5000))
     debug_mode = os.environ.get('DEBUG', 'False').lower() == 'true'
     
-    print(f"Iniciando en puerto {port} (Debug: {debug_mode})")
+    print(f"\n[STARTUP] Iniciando servidor en puerto {port} (Debug: {debug_mode})")
     print("="*70 + "\n")
     
     app.run(host='0.0.0.0', port=port, debug=debug_mode)
