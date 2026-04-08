@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Registros</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Administrar Registros</h1>
+        
+        <a href="/" class="back-link">← Volver a Registro</a>
+        <div class="separator"></div>
+
+        {% if registros %}
+            <div class="table-responsive">
+                <table class="registros-table">
+                    <thead>
+                        <tr>
+                            <th>DNI</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Dirección</th>
+                            <th>Teléfono</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for registro in registros %}
+                        <tr>
+                            <td>{{ registro[1] }}</td>
+                            <td>{{ registro[2] }}</td>
+                            <td>{{ registro[3] }}</td>
+                            <td>{{ registro[4] }}</td>
+                            <td>{{ registro[5] }}</td>
+                            <td>
+                                <form method="post" action="/eliminar/{{ registro[1] }}" style="display:inline;">
+                                    <button type="submit" class="btn-delete" onclick="return confirm('¿Está seguro de que desea eliminar este registro?')">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="no-records">No hay registros disponibles.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
