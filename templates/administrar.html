@@ -3,53 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrar Registros</title>
+    <title>Personal — TecSup</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="container">
-        <div class="logo-container">
-            <img src="{{ url_for('static', filename='assets/img_tecsup.jpeg') }}" alt="Logo TecSup" class="logo-img">
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="/" class="logo-pill">
+        <img src="{{ url_for('static', filename='assets/img_tecsup.jpeg') }}" alt="TecSup">
+        <span>TecSup</span>
+      </a>
+    </div>
+
+    <nav class="nav-section">
+      <div class="nav-section-label">Principal</div>
+      <a href="/" class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Registro
+      </a>
+      <a href="/administrar" class="nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Personal
+        <span class="nav-badge" id="badge-count">0</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">AD</div>
+        <div>
+          <div class="user-name">Administrador</div>
+          <div class="user-role">Sistema TecSup</div>
         </div>
-        <h1>Administrar Registros</h1>
-        
-        <a href="/" class="back-link">← Volver a Registro</a>
-        <div class="separator"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-area">
+    <header class="topbar">
+      <div class="topbar-breadcrumb">
+        <span class="breadcrumb-sep">Inicio</span>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Personal</span>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-date" id="fecha-actual"></span>
+        <div class="user-avatar" style="width:32px;height:32px;font-size:12px;">AD</div>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <div class="page-header">
+        <h1 class="page-title">Personal de la Empresa</h1>
+        <p class="page-subtitle">Visualiza y administra todos los colaboradores registrados</p>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total de Registros</div>
+          <div class="stat-value" id="total-registros">0</div>
+          <div class="stat-trend">
+            <span class="trend-dot green"></span>
+            <span>Actualizado hoy</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Con Contacto</div>
+          <div class="stat-value" id="con-telefono">0</div>
+          <div class="stat-trend">
+            <span class="trend-dot amber"></span>
+            <span>Parcial</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Con Dirección</div>
+          <div class="stat-value" id="con-direccion">0</div>
+          <div class="stat-trend">
+            <span class="trend-dot green"></span>
+            <span>Completados</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Base de datos de Personal</div>
+            <div class="panel-subtitle" id="subtitle-count">Cargando registros...</div>
+          </div>
+          <div class="toolbar">
+            <div class="search-input-wrap">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" class="search-input" id="searchInput" placeholder="Buscar por DNI o nombre...">
+            </div>
+            <a href="/" class="btn btn-primary">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              Nuevo Registro
+            </a>
+          </div>
+        </div>
 
         {% if registros %}
-            <div class="table-responsive">
-                <table class="registros-table">
-                    <thead>
-                        <tr>
-                            <th>DNI</th>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Dirección</th>
-                            <th>Teléfono</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for registro in registros %}
-                        <tr>
-                            <td>{{ registro[1] }}</td>
-                            <td>{{ registro[2] }}</td>
-                            <td>{{ registro[3] }}</td>
-                            <td>{{ registro[4] }}</td>
-                            <td>{{ registro[5] }}</td>
-                            <td>
-                                <form method="post" action="/eliminar/{{ registro[1] }}" style="display:inline;">
-                                    <button type="submit" class="btn-delete" onclick="return confirm('¿Está seguro de que desea eliminar este registro?')">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Persona</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th style="width:100px">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for registro in registros %}
+              <tr>
+                <td>
+                  <div class="cell-person">
+                    <div class="person-avatar av-coral">{{ registro[2][:1] }}</div>
+                    <div>
+                      <div class="person-name">{{ registro[2] }} {{ registro[3] }}</div>
+                      <div class="person-id">DNI: {{ registro[1] }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ registro[5] or "—" }}</td>
+                <td>{{ registro[4] or "—" }}</td>
+                <td>
+                  <div class="row-actions">
+                    <form method="post" action="/eliminar/{{ registro[1] }}" style="display:inline;">
+                      <button type="submit" class="btn btn-danger" onclick="return confirm('¿Eliminar a {{ registro[2] }} {{ registro[3] }}?')">
+                        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        Eliminar
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <span class="pagination-info" id="pagination-info">Mostrando 0 registros</span>
+          <div class="pagination-btns">
+            <button class="page-btn" id="prev-btn">← Anterior</button>
+            <button class="page-btn active" id="page-1">1</button>
+            <button class="page-btn" id="next-btn">Siguiente →</button>
+          </div>
+        </div>
+
         {% else %}
-            <p class="no-records">No hay registros disponibles.</p>
+        <div style="padding: 40px 20px;">
+          <div class="empty-state">
+            <div class="empty-icon">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <h3 class="empty-title">Sin registros</h3>
+            <p class="empty-text">No hay personal registrado aún. Crea el primer registro para comenzar.</p>
+            <div style="margin-top: 16px;">
+              <a href="/" class="btn btn-primary">Crear Primer Registro</a>
+            </div>
+          </div>
+        </div>
         {% endif %}
-    </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  // Actualizar fecha
+  const d = new Date();
+  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  document.getElementById('fecha-actual').textContent = d.toLocaleDateString('es-PE', opts);
+
+  // Calcular estadísticas
+  function actualizarEstadisticas() {
+    const rows = document.querySelectorAll('.data-table tbody tr');
+    const total = rows.length;
+    
+    let conTelefono = 0;
+    let conDireccion = 0;
+
+    rows.forEach(row => {
+      const celdas = row.querySelectorAll('td');
+      const telefono = celdas[1].textContent.trim();
+      const direccion = celdas[2].textContent.trim();
+      
+      if (telefono !== '—') conTelefono++;
+      if (direccion !== '—') conDireccion++;
+    });
+
+    document.getElementById('total-registros').textContent = total;
+    document.getElementById('con-telefono').textContent = conTelefono;
+    document.getElementById('con-direccion').textContent = conDireccion;
+    document.getElementById('badge-count').textContent = total;
+    document.getElementById('subtitle-count').textContent = `${total} registros en el sistema`;
+    document.getElementById('pagination-info').textContent = `Mostrando ${total} registros`;
+  }
+
+  actualizarEstadisticas();
+
+  // Búsqueda
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('keyup', function() {
+      const filter = this.value.toLowerCase();
+      const rows = document.querySelectorAll('.data-table tbody tr');
+      
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(filter) ? '' : 'none';
+      });
+    });
+  }
+</script>
 </body>
 </html>

@@ -14,28 +14,47 @@ DB_PASSWORD = 'xkmD4V6rmoGNJ27uGLq1k76ynORQ8HTd'
 def conectar_db():
     try:
         conn = psycopg2.connect(
-            dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=DB_HOST)
+            dbname=DB_NAME, 
+            user=DB_USER, 
+            password=DB_PASSWORD, 
+            host=DB_HOST,
+            connect_timeout=5
+        )
         return conn
     except psycopg2.Error as e:
         print("Error al conectar a la base de datos:", e)
+        return None
 
 
 def crear_persona(dni, nombre, apellido, direccion, telefono):
-    conn = conectar_db()
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO personas (dni, nombre, apellido, direccion, telefono) VALUES (%s, %s, %s, %s, %s)",
-                   (dni, nombre, apellido, direccion, telefono))
-    conn.commit()
-    conn.close()
+    try:
+        conn = conectar_db()
+        if conn is None:
+            raise Exception("No se pudo conectar a la base de datos")
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO personas (dni, nombre, apellido, direccion, telefono) VALUES (%s, %s, %s, %s, %s)",
+                       (dni, nombre, apellido, direccion, telefono))
+        conn.commit()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        print(f"Error al crear persona: {e}")
+        raise
 
 def obtener_registros():
-    conn = psycopg2.connect(
-        dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=DB_HOST)
-    cursor=conn.cursor()
-    cursor.execute("SELECT * FROM personas order by apellido")
-    registros = cursor.fetchall()
-    conn.close()
-    return registros
+    try:
+        conn = conectar_db()
+        if conn is None:
+            raise Exception("No se pudo conectar a la base de datos")
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM personas order by apellido")
+        registros = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return registros
+    except Exception as e:
+        print(f"Error al obtener registros: {e}")
+        return []
 
 @app.route('/')
 def index():
@@ -43,14 +62,16 @@ def index():
 
 @app.route('/registrar', methods=['POST'])
 def registrar():
-    dni = request.form['dni']
-    nombre = request.form['nombre']
-    apellido = request.form['apellido']
-    direccion = request.form['direccion']
-    telefono = request.form['telefono']
-    crear_persona(dni, nombre, apellido, direccion, telefono)
-    mensaje_confirmacion = "Registro Exitoso"
-    return redirect(url_for('index', mensaje_confirmacion=mensaje_confirmacion))
+    try:
+        dni = request.form['dni']
+        nombre = request.form['nombre']
+        apellido = request.form['apellido']
+        direccion = request.form['direccion']
+        telefono = request.form['telefono']
+        crear_persona(dni, nombre, apellido, direccion, telefono)
+    except Exception as e:
+        print(f"Error en el registro: {e}")
+    return redirect(url_for('index'))
 
 @app.route('/administrar')
 def administrar():
@@ -59,15 +80,20 @@ def administrar():
 
 @app.route('/eliminar/<dni>', methods=['POST'])
 def eliminar_registro(dni):
-    conn = psycopg2.connect(
-        dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=DB_HOST)
-    cursor=conn.cursor()
-    cursor.execute("DELETE FROM personas WHERE dni = %s", (dni,))
-    conn.commit()
-    conn.close()
+    try:
+        conn = conectar_db()
+        if conn is None:
+            raise Exception("No se pudo conectar a la base de datos")
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM personas WHERE dni = %s", (dni,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        print(f"Error al eliminar registro: {e}")
     return redirect(url_for('administrar'))
 
 if __name__ == '__main__':
-    #Esto es nuevo
-    port = int(os.environ.get('PORT',5000))    
-    app.run(host='0.0.0.0', port=port, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    debug_mode = os.environ.get('DEBUG', 'False').lower() == 'true'
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)
