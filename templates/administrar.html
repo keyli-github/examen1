@@ -63,6 +63,17 @@
         <p class="page-subtitle">Visualiza y administra todos los colaboradores registrados</p>
       </div>
 
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash-msg flash-{{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
       <!-- Stats Grid -->
       <div class="stats-grid">
         <div class="stat-card">

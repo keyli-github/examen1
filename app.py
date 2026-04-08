@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 import psycopg2
 import os
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
+app.secret_key = 'tu-clave-secreta-tecsup-2026'  # Necesario para flash messages
 
 # Configuración de la base de datos
 DB_HOST = 'dpg-cr6bdj1u0jms73bn1teg-a.oregon-postgres.render.com'
@@ -63,15 +64,25 @@ def index():
 @app.route('/registrar', methods=['POST'])
 def registrar():
     try:
-        dni = request.form['dni']
-        nombre = request.form['nombre']
-        apellido = request.form['apellido']
-        direccion = request.form['direccion']
-        telefono = request.form['telefono']
+        dni = request.form.get('dni', '').strip()
+        nombre = request.form.get('nombre', '').strip()
+        apellido = request.form.get('apellido', '').strip()
+        direccion = request.form.get('direccion', '').strip()
+        telefono = request.form.get('telefono', '').strip()
+        
+        # Validar campos requeridos
+        if not dni or not nombre or not apellido:
+            flash('Error: DNI, Nombre y Apellido son requeridos', 'error')
+            return redirect(url_for('index'))
+        
         crear_persona(dni, nombre, apellido, direccion, telefono)
+        flash(f'✓ Persona registrada correctamente: {nombre} {apellido}', 'success')
     except Exception as e:
         print(f"Error en el registro: {e}")
-    return redirect(url_for('index'))
+        flash(f'Error al registrar: {str(e)}', 'error')
+    
+    # Redirigir a administrar para ver el nuevo registro
+    return redirect(url_for('administrar'))
 
 @app.route('/administrar')
 def administrar():
